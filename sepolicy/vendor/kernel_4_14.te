@@ -1,0 +1,33 @@
+# Denials seen on the Sony Open Devices 4.14 kernel with the sm8250 based display HAL.
+
+# The gralloc mapper of the sm8250 display HAL talks to the legacy ion allocator in every client.
+allow {
+  surfaceflinger
+  bootanim
+  mediaswcodec
+  system_server
+  appdomain
+  hal_audio_default
+  hal_camera_default
+  hal_drm_widevine
+  hal_fingerprint_default
+  hal_gatekeeper_default
+  hal_graphics_allocator_default
+  hal_graphics_composer_default
+  hal_keymaster_default
+  tee
+} ion_device:chr_file rw_file_perms;
+
+# Backlight and rotator nodes behind the SDE display driver
+allow hal_graphics_composer_default sysfs_graphics:dir r_dir_perms;
+allow hal_graphics_composer_default sysfs_graphics:file rw_file_perms;
+
+
+# Properties that the 4.4 policy did not know about
+get_prop(hal_camera_default, zygote_config_prop)
+get_prop(qtidataservices_app, vendor_default_prop)
+
+# AF_QIPCRTR sockets of the modem helper daemons
+allow mlog_qmi_service self:qipcrtr_socket create_socket_perms_no_ioctl;
+allow sct_service self:qipcrtr_socket create_socket_perms_no_ioctl;
+allow ta_qmi_service self:qipcrtr_socket create_socket_perms_no_ioctl;

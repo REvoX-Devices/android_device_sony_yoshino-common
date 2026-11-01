@@ -93,3 +93,6 @@
 
 # ION (legacy ioctl compat on 4.14); A17 no longer labels /dev/ion
 /dev/ion                                      u:object_r:ion_device:s0
+
+# The sm8250 display HAL is loaded into the clients
+/(vendor|system/vendor)/lib(64)?/hw/gralloc\.qcom\.so    u:object_r:same_process_hal_file:s0
