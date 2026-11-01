@@ -1,0 +1,40 @@
+--- a/smali/com/qualcomm/ims/vt/ImsMedia.smali
++++ b/smali/com/qualcomm/ims/vt/ImsMedia.smali
+@@ -957,12 +957,22 @@
+ .method private static native nativeDeInit()V
+ .end method
+ 
+-.method private static native nativeGetNegotiatedFPS()S
++.method private static native nativeGetNegotiatedFPS()I
+ .end method
+ 
+ .method private static native nativeGetNegotiatedHeight()I
+ .end method
+ 
++# Registered by the newer libimsmedia_jni.so; declared so that RegisterNatives succeeds
++.method private static native nativeGetSurfaceHeight(Landroid/view/Surface;)I
++.end method
++
++.method private static native nativeGetSurfaceWidth(Landroid/view/Surface;)I
++.end method
++
++.method private static native nativeSetSharedDisplayParameters(II)I
++.end method
++
+ .method private static native nativeGetNegotiatedWidth()I
+ .end method
+ 
+@@ -1265,10 +1275,12 @@
+ 
+     .line 639
+     .local v2, "w":I
+-    invoke-static {}, Lcom/qualcomm/ims/vt/ImsMedia;->nativeGetNegotiatedFPS()S
++    invoke-static {}, Lcom/qualcomm/ims/vt/ImsMedia;->nativeGetNegotiatedFPS()I
+ 
+     move-result v3
+ 
++    int-to-short v3, v3
++
+     .line 640
+     .local v3, "fps":S
+     invoke-static {}, Lcom/qualcomm/ims/vt/ImsMedia;->nativeGetUIOrientationMode()I

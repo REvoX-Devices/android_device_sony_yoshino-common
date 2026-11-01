@@ -41,6 +41,18 @@ lib_fixups: lib_fixups_user_type = {
 }
 
 blob_fixups: blob_fixups_user_type = {
+    # set_sched_policy moved from libcutils to libprocessgroup
+    'vendor/lib64/libgps.utils.so': blob_fixup()
+        .add_needed('libprocessgroup.so'),
+    # gBnConstructorMap was removed from libhidlbase; libhidl_legacy_compat provides it
+    ('vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti',
+     'vendor/bin/hw/vendor.qti.hardware.qteeconnector@1.0-service',
+     'vendor/bin/hw/vendor.qti.hardware.tui_comm@1.0-service-qti'): blob_fixup()
+        .add_needed('libhidl_legacy_compat.so'),
+    # The Android 9 ims.apk got QtiCarrierConfigHelper from the boot classpath; declare the library,
+    # and match ImsMedia's natives to the newer libimsmedia_jni.so (RegisterNatives fails otherwise)
+    'system_ext/priv-app/ims/ims.apk': blob_fixup()
+        .apktool_patch('blob-patches/ims'),
     'system_ext/lib64/lib-imscamera.so': blob_fixup()
         .add_needed('libgui_shim.so'),
     'system_ext/lib64/lib-imsvideocodec.so': blob_fixup()
@@ -49,7 +61,9 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('libqdMetaData.so', 'libqdMetaData.system.so'),
     ('vendor/bin/hw/fpc_fingerprint@2.1_HIDL-service', 'vendor/bin/thermal-engine',
      'vendor/lib64/lib_fpc_tac_shared.so'): blob_fixup()
-        .replace_needed('libprotobuf-c.so', 'libprotobuf-c-idd.so'),
+        .replace_needed('libprotobuf-c.so', 'libprotobuf-c-idd.so')
+        # 4.14 has no /sys/devices/soc; init.qcom.rc symlinks /dev/fpc1145 to the platform path
+        .binary_regex_replace(b'/sys/devices/soc/soc:fpc1145\x00', b'/dev/fpc1145' + b'\x00' * 17),
     'vendor/bin/hw/vendor.semc.hardware.secd@1.0-service': blob_fixup()
         .replace_needed('libprotobuf-c.so', 'libprotobuf-c-idd.so')
         .replace_needed('libcrypto.so', 'libcrypto-v33.so'),

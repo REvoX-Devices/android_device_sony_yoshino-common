@@ -1,0 +1,12 @@
+// libhidl dropped the deprecated gBnConstructorMap / gBsConstructorMap globals,
+// but the Android 9 vendor blobs still link against them.
+cc_library_shared {
+    name: "libhidl_legacy_compat",
+    vendor: true,
+    srcs: ["legacy_constructor_maps.cpp"],
+    shared_libs: [
+        "libbase",
+        "libhidlbase",
+        "libutils",
+    ],
+}

@@ -1,0 +1,10 @@
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -15,6 +15,7 @@
+     <permission android:name="com.qti.permission.AUDIO" android:protectionLevel="signatureOrSystem"/>
+     <uses-permission android:name="android.permission.STATUS_BAR_SERVICE"/>
+     <application android:directBootAware="true">
++        <uses-library android:name="ims-ext-common" android:required="false"/>
+         <service android:enabled="true" android:exported="true" android:name=".ImsService" android:permission="android.permission.BIND_IMS_SERVICE" android:persistent="true" android:process="com.android.phone" android:singleUser="true">
+             <meta-data android:name="android.telephony.ims.MMTEL_FEATURE" android:value="true"/>
+             <meta-data android:name="android.telephony.ims.EMERGENCY_MMTEL_FEATURE" android:value="true"/>

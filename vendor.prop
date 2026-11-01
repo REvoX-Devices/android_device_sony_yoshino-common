@@ -73,7 +73,10 @@ persist.vendor.data.mode=concurrent
 ro.vendor.use_data_netmgrd=true
 
 # Display
-debug.gralloc.gfx_ubwc_disable=0
+# The 4.14 SDE reports "Unsupported UBWC version 0x0" and scanning out UBWC buffers
+# garbles half of the panel, so keep every graphic buffer linear.
+debug.gralloc.gfx_ubwc_disable=1
+vendor.gralloc.disable_ubwc=1
 ro.surface_flinger.enable_frame_rate_override=false
 
 # DRM
@@ -98,7 +101,7 @@ vendor.display.disable_partial_split=1
 vendor.display.disable_rotator_downscale=1
 vendor.display.disable_skip_validate=1
 vendor.display.enable_default_color_mode=1
-vendor.gralloc.enable_fb_ubwc=1
+vendor.gralloc.enable_fb_ubwc=0
 
 # IMS
 persist.dbg.volte_avail_ovr=1

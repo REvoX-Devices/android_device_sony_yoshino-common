@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+# Kernel: 4.14 (Sony Open Devices, kernel/sony/msm8998-4.14) or the legacy 4.4
+MAPLE_KERNEL ?= 4.14
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/non_ab_device.mk)
 
 # Add common definitions for Qualcomm
@@ -54,10 +57,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libchokoballpal_shim
 
-# Configstore
-PRODUCT_PACKAGES += \
-    disable_configstore
-
 # Cgroup and task profiles
 PRODUCT_COPY_FILES += \
     system/core/libprocessgroup/profiles/cgroups_28.json:$(TARGET_COPY_OUT_VENDOR)/etc/cgroups.json \
@@ -67,6 +66,16 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, frameworks/native/build/phone-xhdpi-4096-dalvik-heap.mk)
 
 # Display
+ifeq ($(MAPLE_KERNEL),4.14)
+# 4.14 uses the SDE DRM display stack (hardware/qcom-caf/msm8998/display is taken from sm8250)
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.mapper@3.0-impl-qti-display \
+    android.hardware.graphics.mapper@4.0-impl-qti-display \
+    gralloc.qcom \
+    vendor.qti.hardware.display.allocator-service \
+    vendor.qti.hardware.display.composer-service \
+    vendor.qti.hardware.memtrack-service
+else
 PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-impl:64 \
     android.hardware.graphics.allocator@2.0-service \
@@ -76,6 +85,7 @@ PRODUCT_PACKAGES += \
     hwcomposer.qcom \
     libdisplayconfig \
     vendor.qti.hardware.memtrack-service
+endif
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -98,15 +108,33 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     vendor.lineage.health-service.default
 
-# LiveDisplay
+# LiveDisplay (A9 libsdm-disp-vndapis needs the old sdm::Debug ABI; not usable with the sm8250 display stack)
+ifneq ($(MAPLE_KERNEL),4.14)
 PRODUCT_PACKAGES += \
     vendor.lineage.livedisplay-service.sdm
+endif
+
+# Android 9 vendor blobs that need libhidl's removed gBnConstructorMap
+PRODUCT_PACKAGES += \
+    libhidl_legacy_compat
 
 # Mac address setup
 PRODUCT_PACKAGES += \
     macaddrsetup
 
 $(call soong_config_set,sony_macaddrsetup,wifi_driver,qca_cld3)
+
+# Android 17's libion is a no-op stub; the 4.14 kernel only has the legacy ION
+$(call soong_config_set_bool,libion,legacy_impl,true)
+
+# SurfaceFlinger asks for IAllocator@4.0 / IMapper@4.0
+# (plain variable: the other qcom display trees select() on it as a string)
+SOONG_CONFIG_qtidisplay_gralloc4 := true
+
+# The prebuilt Adreno 5xx blobs read size/offset/base straight out of the gralloc handle
+# using the Android 9 field order, so keep that layout (a mismatch crashed RenderEngine in
+# the driver's host-pointer texture copy).
+$(call soong_config_set,qtidisplay,gralloc_handle_legacy_layout,true)
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -134,12 +162,14 @@ DEVICE_PACKAGE_OVERLAYS += \
 
 PRODUCT_ENFORCE_RRO_TARGETS := *
 
-# OMX
+# OMX (the 4.14 kernel's ION UAPI is not compatible with the CAF OMX sources yet)
+ifneq ($(MAPLE_KERNEL),4.14)
 PRODUCT_PACKAGES += \
     libc2dcolorconvert \
     libOmxVdec \
     libOmxVenc \
     libstagefrighthw
+endif
 
 # Partitions
 PRODUCT_PACKAGES += \
@@ -194,6 +224,7 @@ PRODUCT_COPY_FILES += \
 # Power
 PRODUCT_PACKAGES += \
     android.hardware.power-service.lineage-libperfmgr \
+    libperfmgr \
     libqti-perfd-client
 
 PRODUCT_COPY_FILES += \
@@ -237,6 +268,7 @@ PRODUCT_SOONG_NAMESPACES += \
     bootable/deprecated-ota \
     hardware/google/interfaces \
     hardware/google/pixel \
+    hardware/google/pixel/power-libperfmgr \
     hardware/lineage/interfaces/power-libperfmgr \
     hardware/qcom-caf/common/libqti-perfd-client
 

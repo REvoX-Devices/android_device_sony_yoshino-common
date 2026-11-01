@@ -90,3 +90,6 @@
 /dev/bd7602-i2c                               u:object_r:nfc_device:s0
 /dev/cxd224x-i2c                              u:object_r:nfc_device:s0
 /dev/pn553                                    u:object_r:nfc_device:s0
+
+# ION (legacy ioctl compat on 4.14); A17 no longer labels /dev/ion
+/dev/ion                                      u:object_r:ion_device:s0

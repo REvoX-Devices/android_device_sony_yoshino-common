@@ -235,6 +235,13 @@ on early-boot
     setrlimit 8 67108864 67108864
 
 on boot
+    # qcacld is built into the kernel: it only registers /dev/wlan (and wlan0) after this trigger
+    write /sys/kernel/boot_wlan/boot_wlan 1
+
+    # lib_fpc_tac_shared.so is patched to open /dev/fpc1145 instead of the 4.4-era
+    # /sys/devices/soc/soc:fpc1145 (4.14 puts platform devices under /sys/devices/platform)
+    symlink /sys/devices/platform/soc/soc:fpc1145 /dev/fpc1145
+
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/type
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/state
     chown system system /sys/module/msm_core/parameters/polling_interval
@@ -294,18 +301,18 @@ on boot
     chown cameraserver system /sys/class/leds/led:switch_0/fault_status
 
     # FPC
-    chown system system /sys/devices/soc/soc:fpc1145/hw_reset
-    chown system system /sys/devices/soc/soc:fpc1145/pinctl_set
-    chown system system /sys/devices/soc/soc:fpc1145/regulator_enable
-    chown system system /sys/devices/soc/soc:fpc1145/spi_prepare
-    chown system system /sys/devices/soc/soc:fpc1145/irq
-    chown system system /sys/devices/soc/soc:fpc1145/wakeup_enable
-    chmod 0644 /sys/devices/soc/soc:fpc1145/hw_reset
-    chmod 0644 /sys/devices/soc/soc:fpc1145/pinctl_set
-    chmod 0644 /sys/devices/soc/soc:fpc1145/regulator_enable
-    chmod 0644 /sys/devices/soc/soc:fpc1145/spi_prepare
-    chmod 0644 /sys/devices/soc/soc:fpc1145/irq
-    chmod 0644 /sys/devices/soc/soc:fpc1145/wakeup_enable
+    chown system system /sys/devices/platform/soc/soc:fpc1145/hw_reset
+    chown system system /sys/devices/platform/soc/soc:fpc1145/pinctl_set
+    chown system system /sys/devices/platform/soc/soc:fpc1145/regulator_enable
+    chown system system /sys/devices/platform/soc/soc:fpc1145/spi_prepare
+    chown system system /sys/devices/platform/soc/soc:fpc1145/irq
+    chown system system /sys/devices/platform/soc/soc:fpc1145/wakeup_enable
+    chmod 0644 /sys/devices/platform/soc/soc:fpc1145/hw_reset
+    chmod 0644 /sys/devices/platform/soc/soc:fpc1145/pinctl_set
+    chmod 0644 /sys/devices/platform/soc/soc:fpc1145/regulator_enable
+    chmod 0644 /sys/devices/platform/soc/soc:fpc1145/spi_prepare
+    chmod 0644 /sys/devices/platform/soc/soc:fpc1145/irq
+    chmod 0644 /sys/devices/platform/soc/soc:fpc1145/wakeup_enable
 
     # Clearpad
     chown system system /sys/devices/virtual/input/clearpad/fwrevision
