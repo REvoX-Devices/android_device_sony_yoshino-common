@@ -4,6 +4,7 @@
 allow {
   surfaceflinger
   bootanim
+  cameraserver
   mediaswcodec
   system_server
   appdomain
@@ -25,7 +26,6 @@ allow hal_graphics_composer_default sysfs_graphics:file rw_file_perms;
 
 # Properties that the 4.4 policy did not know about
 get_prop(hal_camera_default, zygote_config_prop)
-get_prop(qtidataservices_app, vendor_default_prop)
 
 # AF_QIPCRTR sockets of the modem helper daemons
 allow mlog_qmi_service self:qipcrtr_socket create_socket_perms_no_ioctl;
