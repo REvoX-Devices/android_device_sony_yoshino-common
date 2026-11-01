@@ -328,3 +328,18 @@ PRODUCT_PACKAGES += \
 
 # Inherit proprietary blobs
 $(call inherit-product, vendor/sony/yoshino-common/yoshino-common-vendor.mk)
+
+# REvoX settings
+$(call inherit-product, vendor/sony/revox-tweaks/revox-tweaks.mk)
+
+# Dolby Atmos: legacy DAX3 1.1.1.24 libs (vendor/sony/extra), UI and tuning from stock SO-51A
+ifneq ($(wildcard vendor/sony/extra/audio-legacy/audio-legacy.mk),)
+$(call inherit-product, vendor/sony/extra/audio-legacy/audio-legacy.mk)
+ifneq ($(wildcard vendor/sony/so51a/dolby/DaxUI.apk),)
+PRODUCT_SOONG_NAMESPACES += vendor/sony/so51a/dolby
+PRODUCT_PACKAGES += DaxUIClassic
+PRODUCT_COPY_FILES += \
+    vendor/sony/so51a/dolby/dax-default.xml:$(TARGET_COPY_OUT_VENDOR)/etc/dolby/dax-default.xml \
+    vendor/sony/so51a/dolby/dsx_param_file.bin:$(TARGET_COPY_OUT_VENDOR)/etc/dsx_param_file.bin
+endif
+endif

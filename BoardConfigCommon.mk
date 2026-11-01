@@ -51,6 +51,15 @@ DEVICE_MANIFEST_FILE := $(COMMON_PATH)/manifest.xml
 endif
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 
+# Dolby Atmos (vendor/sony/extra/audio-legacy). Its BoardConfigAudio.mk is not included because
+# AUDIO_FEATURE_ENABLED_DS2_DOLBY_DAP needs DS2 libs that the source-built msm8998 audio HAL lacks;
+# DAP runs as a plain software effect (audio_effects.xml) instead.
+ifneq ($(wildcard vendor/sony/extra/audio-legacy/audio-legacy.mk),)
+BOARD_VENDOR_SEPOLICY_DIRS += vendor/sony/extra/audio-legacy/sepolicy/vendor
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += vendor/sony/extra/audio-legacy/configs/vintf/dolby_framework_matrix.xml
+DEVICE_MANIFEST_FILE += vendor/sony/extra/audio-legacy/configs/vintf/vendor.dolby.hardware.dms.xml
+endif
+
 # Kernel
 BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom msm_rtb.filter=0x37 ehci-hcd.park=3
 BOARD_KERNEL_CMDLINE += lpm_levels.sleep_disabled=1 sched_enable_power_aware=1
