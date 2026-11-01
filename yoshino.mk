@@ -286,6 +286,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     telephony-ext
 
+# qcrilmsgtunnel uses the Pie name of the hidl manager library
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/permissions/android.hidl.manager-legacy.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/android.hidl.manager-legacy.xml
+
 # Tethering
 PRODUCT_PACKAGES += \
     TetheringConfigOverlay
