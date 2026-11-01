@@ -71,6 +71,7 @@ ifeq ($(MAPLE_KERNEL),4.14)
 PRODUCT_PACKAGES += \
     android.hardware.graphics.mapper@3.0-impl-qti-display \
     android.hardware.graphics.mapper@4.0-impl-qti-display \
+    android.hardware.graphics.mapper@2.0-impl-2.1 \
     gralloc.qcom \
     vendor.qti.hardware.display.allocator-service \
     vendor.qti.hardware.display.composer-service \
@@ -343,3 +344,6 @@ PRODUCT_COPY_FILES += \
     vendor/sony/so51a/dolby/dsx_param_file.bin:$(TARGET_COPY_OUT_VENDOR)/etc/dsx_param_file.bin
 endif
 endif
+
+# Removes the heavy GMS apps (Wellbeing, Gemini, Google app, ...), see overlay-trim/GmsHeavyTrim
+PRODUCT_PACKAGES += GmsHeavyTrim

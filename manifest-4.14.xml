@@ -424,4 +424,14 @@
             <instance>default</instance>
         </interface>
     </hal>
+    <!-- The Sony camera HAL imports its buffers through IMapper 2.0 (on top of gralloc.qcom) -->
+    <hal format="hidl">
+        <name>android.hardware.graphics.mapper</name>
+        <transport arch="32+64">passthrough</transport>
+        <version>2.1</version>
+        <interface>
+            <name>IMapper</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </manifest>
