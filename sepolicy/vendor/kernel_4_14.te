@@ -35,3 +35,11 @@ allow ta_qmi_service self:qipcrtr_socket create_socket_perms_no_ioctl;
 # wcnss_service looks up persist.vendor.wigig.*; WiGig is not present and the property
 # type is internal to the platform, so the lookup is expected to fail
 dontaudit wcnss_service system_internal_property_type:file { getattr map open read };
+
+# Dolby (DaxUI) talks to the DMS HAL as a platform app
+hal_client_domain(platform_app_36, hal_dms)
+binder_call(platform_app_36, hal_dms_default)
+binder_call(hal_dms_default, platform_app_36)
+
+# vendor.qti.iwlan reads the zygote config props at startup
+get_prop(qtidataservices_app, zygote_config_prop)

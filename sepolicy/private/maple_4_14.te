@@ -6,3 +6,6 @@ get_prop(mediacodeclist_generator, vendor_sys_video_prop)
 # The qtidataservices apps map the vendor_default_prop area at startup, which platform
 # domains must not read; the values they care about are not needed here
 dontaudit vendor_dataservice_app vendor_default_prop:file { getattr map open read };
+
+# The Evolution updater asks SystemUpdateManager for the pending update state
+allow updater_app system_update_service:service_manager find;
