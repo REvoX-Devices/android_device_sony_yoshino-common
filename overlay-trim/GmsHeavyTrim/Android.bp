@@ -29,6 +29,7 @@ runtime_resource_overlay {
         "DevicePersonalizationAiAiPrebuiltPixel2026",
         "Velvet",
         "NgaResources",
+        "GoogleTTS",
     ],
     product_specific: true,
     sdk_version: "current",
