@@ -30,6 +30,7 @@ runtime_resource_overlay {
         "Velvet",
         "NgaResources",
         "GoogleTTS",
+        "WallpaperPickerGoogleRelease",
     ],
     product_specific: true,
     sdk_version: "current",
