@@ -1,0 +1,8 @@
+# system_ext (platform side) rules for denials seen on the Sony Open Devices 4.14 kernel.
+
+# mediacodeclist_generator reads vendor.sys.media.target.version / vendor.sys.video.disable.ubwc
+get_prop(mediacodeclist_generator, vendor_sys_video_prop)
+
+# The qtidataservices apps map the vendor_default_prop area at startup, which platform
+# domains must not read; the values they care about are not needed here
+dontaudit vendor_dataservice_app vendor_default_prop:file { getattr map open read };

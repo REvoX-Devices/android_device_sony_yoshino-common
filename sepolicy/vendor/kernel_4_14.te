@@ -31,3 +31,7 @@ get_prop(hal_camera_default, zygote_config_prop)
 allow mlog_qmi_service self:qipcrtr_socket create_socket_perms_no_ioctl;
 allow sct_service self:qipcrtr_socket create_socket_perms_no_ioctl;
 allow ta_qmi_service self:qipcrtr_socket create_socket_perms_no_ioctl;
+
+# wcnss_service looks up persist.vendor.wigig.*; WiGig is not present and the property
+# type is internal to the platform, so the lookup is expected to fail
+dontaudit wcnss_service system_internal_property_type:file { getattr map open read };
